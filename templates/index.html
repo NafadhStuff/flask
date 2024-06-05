@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ekstraksi Fitur Raisin</title>
+    <style>
+    /* CSS styles */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        padding: 20px;
+        background-color: #f5f5f5;
+        background-image: url("https://png.pngtree.com/thumb_back/fw800/background/20231023/pngtree-abundance-of-raisins-a-close-up-of-textured-dried-grapes-as-image_13678283.png");
+        background-size: 100% 100%;
+    }
+
+    h1, h2, h3 {
+        margin-bottom: 10px;
+        color: #fff;
+    }
+
+    h1, form {
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    input[type="file"] {
+        margin-right: 10px;
+        padding: 8px 15px;
+        border: 2px solid #007bff;
+        border-radius: 5px;
+        background-color: #fff;
+        color: #007bff;
+        cursor: pointer;
+    }
+
+    input[type="file"]:hover {
+        background-color: #007bff;
+        color: #fff;
+    }
+
+    button[type="submit"] {
+        padding: 8px 15px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    button[type="submit"]:hover {
+        background-color: #0056b3;
+    }
+
+    hr {
+        margin: 20px 0;
+        border: none;
+        border-top: 5px solid #ccc;
+    }
+
+    .feature-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    .feature {
+        position: relative;
+        width: calc(33.33% - 20px);
+        margin-bottom: 20px;
+        padding: 20px;
+        background-color: #fff;
+        border: 1px solid black;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s, box-shadow 0.3s;
+        overflow: hidden;
+    }
+
+    .feature:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        background-color: lightblue;
+    }
+
+    .feature h3 {
+        margin-bottom: 10px;
+        color: #333;
+    }
+
+    .feature p {
+        margin-bottom: 5px;
+        color: #666;
+    }
+
+    .feature img {
+        position: relative;
+        max-width: 100%;
+        height: auto;
+        border-radius: 5px;
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .feature:hover img {
+        transform: scale(1.1);
+    }
+
+    .canvas-container {
+        position: relative;
+    }
+
+    .feature canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1;
+    }
+
+    .feature .caption {
+        position: absolute;
+        background-color: rgba(255, 255, 255, 0.8);
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        color: #333;
+    }
+
+    .caption-top {
+        top: 5px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .caption-bottom {
+        bottom: 5px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .caption-left {
+        top: 50%;
+        left: 5px;
+        transform: translateY(-50%);
+    }
+
+    .caption-right {
+        top: 50%;
+        right: 5px;
+        transform: translateY(-50%);
+    }
+
+    </style>
+</head>
+<body>
+    <h1>Ekstraksi Fitur Raisin</h1>
+    <form action="/upload" method="POST" enctype="multipart/form-data">
+        <input type="file" name="image" accept=".jpg, .jpeg, .png">
+        <button type="submit">Unggah Gambar</button>
+    </form>
+    <hr>
+    {% if features %}
+        <h2>Hasil Ekstraksi Fitur:</h2>
+        <div class="feature-container">
+            <div class="feature">
+                <h3>Area</h3>
+                <p>Ukuran: {{ features.area }}</p>
+                <p>Diukur dari: Jumlah piksel dalam batas butir kismis menunjukkan ukuran atau luas dari butir kismis tersebut.</p>
+                <div class="canvas-container"> <!-- Add canvas container -->
+                    <img id="areaImage" src="{{ url_for('uploaded_file', filename=image_name) }}" alt="Area">
+                </div>
+            </div>
+            <div class="feature">
+                <h3>Major Axis Length</h3>
+                <p>Ukuran: {{ features.major_axis_length }}</p>
+                <p>Diukur dari: Garis panjang terbesar (utama)</p>
+                <div class="canvas-container"> <!-- Add canvas container -->
+                    <img id="majorAxisImage" src="{{ url_for('uploaded_file', filename=image_name) }}" alt="Major Axis Length">
+                </div>
+            </div>
+            <div class="feature">
+                <h3>Minor Axis Length</h3>
+                <p>Ukuran: {{ features.minor_axis_length }}</p>
+                <p>Diukur dari: Garis pendek terbesar (minor)</p>
+                <div class="canvas-container"> <!-- Add canvas container -->
+                    <img id="minorAxisImage" src="{{ url_for('uploaded_file', filename=image_name) }}" alt="Minor Axis Length">
+                </div>
+            </div>
+            <div class="feature">
+                <h3>Eccentricity</h3>
+                <p>Ukuran: {{ features.eccentricity }}</p>
+                <p>Diukur dari: Distribusi momen geometri eksentrisitas elips yang memiliki momen yang sama dengan kismis. Di antara 0 dan 1, di mana nilai 0 menunjukkan elips sempurna dan nilai mendekati 1 menunjukkan elips yang sangat memanjang.</p>
+                <div class="canvas-container"> <!-- Add canvas container -->
+                    <img id="eccentricityImage" src="{{ url_for('uploaded_file', filename=image_name) }}" alt="Eccentricity">
+                </div>
+            </div>
+            <div class="feature">
+                <h3>Convex Area</h3>
+                <p>Ukuran: {{ features.convex_area }}</p>
+                <p>Diukur dari: Luas daerah raisin yang melingkupi bentuk kismis secara konveks.</p>
+                <div class="canvas-container"> <!-- Add canvas container -->
+                    <img id="convexAreaImage" src="{{ url_for('uploaded_file', filename=image_name) }}" alt="Convex Area">
+                </div>
+            </div>
+            <div class="feature">
+                <h3>Extent</h3>
+                <p>Ukuran: {{ features.extent }}</p>
+                <p>Diukur dari: Ukuran yang menggambarkan seberapa banyak area dari suatu objek yang tertutup oleh kontur objek tersebut.</p>
+                <div class="canvas-container"> <!-- Add canvas container -->
+                    <img id="extentImage" src="{{ url_for('uploaded_file', filename=image_name) }}" alt="Extent">
+                </div>
+            </div>
+            <div class="feature">
+                <h3>Perimeter</h3>
+                <p>Ukuran: {{ features.perimeter }}</p>
+                <p>Diukur dari: perimeter mengukur total panjang dari semua garis yang membentuk batas butir kismis tersebut.</p>
+                <div class="canvas-container"> <!-- Add canvas container -->
+                    <img id="perimeterImage" src="{{ url_for('uploaded_file', filename=image_name) }}" alt="Perimeter">
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <script>
+        // Ambil elemen gambar
+        var areaImage = document.getElementById('areaImage');
+        var majorAxisImage = document.getElementById('majorAxisImage');
+        var minorAxisImage = document.getElementById('minorAxisImage');
+        var eccentricityImage = document.getElementById('eccentricityImage');
+        var convexAreaImage = document.getElementById('convexAreaImage');
+        var extentImage = document.getElementById('extentImage');
+        var perimeterImage = document.getElementById('perimeterImage');
+
+        // Tambahkan event listener saat gambar selesai dimuat
+        areaImage.addEventListener('load', function() {
+            drawFeatureLines(areaImage, 0, 50, areaImage.width, areaImage.height);
+        });
+
+        majorAxisImage.addEventListener('load', function() {
+            drawMajorAxisLine(majorAxisImage);
+        });
+
+        minorAxisImage.addEventListener('load', function() {
+            drawMinorAxisLine(minorAxisImage);
+        });
+
+        eccentricityImage.addEventListener('load', function() {
+            drawFeatureLines(eccentricityImage, 0, 0, eccentricityImage.width, eccentricityImage.height);
+        });
+
+        convexAreaImage.addEventListener('load', function() {
+            drawFeatureLines(convexAreaImage, 0, 0, convexAreaImage.width, convexAreaImage.height);
+        });
+
+        extentImage.addEventListener('load', function() {
+            drawFeatureLines(extentImage, 0, 0, extentImage.width, extentImage.height);
+        });
+
+        perimeterImage.addEventListener('load', function() {
+            drawFeatureLines(perimeterImage, 0, 0, perimeterImage.width, perimeterImage.height);
+        });
+
+        function drawFeatureLines(image, startX, startY, endX, endY) {
+            // Dapatkan konteks 2D dari canvas
+            var canvas = document.createElement('canvas');
+            var ctx = canvas.getContext('2d');
+            canvas.width = image.width;
+            canvas.height = image.height;
+
+            // Gambar garis merah untuk fitur
+            ctx.beginPath();
+            ctx.strokeStyle = 'red';
+            ctx.lineWidth = 2;
+
+            // Sesuaikan posisi garis berdasarkan fitur
+            switch (image.id) {
+                case 'areaImage':
+                    // Garis mengelilingi gambar
+                    ctx.rect(0, 0, image.width, image.height);
+                    break;
+                case 'eccentricityImage':
+                    // Gambar garis diagonal
+                    ctx.moveTo(startX, startY);
+                    ctx.lineTo(endX, endY);
+                    break;
+                case 'convexAreaImage':
+                    // Garis mengelilingi hull convex
+                    ctx.rect(0, 0, image.width, image.height);
+                    break;
+                case 'extentImage':
+                    // Garis mengelilingi hull convex
+                    ctx.rect(0, 0, image.width, image.height);
+                    break;
+                case 'perimeterImage':
+                    // Garis mengelilingi hull convex
+                    ctx.rect(0, 0, image.width, image.height);
+                    break;
+                default:
+                    break;
+            }
+
+            // Gambar garis pada kanvas
+            ctx.stroke();
+
+            // Tambahkan kanvas ke dalam elemen gambar
+            image.parentNode.appendChild(canvas);
+        }
+
+        function drawMajorAxisLine(image) {
+            var canvas = document.createElement('canvas');
+            var ctx = canvas.getContext('2d');
+            canvas.width = image.width;
+            canvas.height = image.height;
+            ctx.beginPath();
+            ctx.strokeStyle = 'red';
+            ctx.lineWidth = 2;
+
+            if (image.width > image.height) {
+                // Landscape
+                ctx.moveTo(0, image.height / 2);
+                ctx.lineTo(image.width, image.height / 2);
+            } else {
+                // Portrait
+                ctx.moveTo(image.width / 2, 0);
+                ctx.lineTo(image.width / 2, image.height);
+            }
+
+            ctx.stroke();
+            image.parentNode.appendChild(canvas);
+        }
+
+        function drawMinorAxisLine(image) {
+            var canvas = document.createElement('canvas');
+            var ctx = canvas.getContext('2d');
+            canvas.width = image.width;
+            canvas.height = image.height;
+            ctx.beginPath();
+            ctx.strokeStyle = 'red';
+            ctx.lineWidth = 2;
+
+            if (image.width > image.height) {
+                // Landscape
+                ctx.moveTo(image.width / 2, 0);
+                ctx.lineTo(image.width / 2, image.height);
+            } else {
+                // Portrait
+                ctx.moveTo(0, image.height / 2);
+                ctx.lineTo(image.width, image.height / 2);
+            }
+
+            ctx.stroke();
+            image.parentNode.appendChild(canvas);
+        }
+    </script>
+</body>
+</html>
